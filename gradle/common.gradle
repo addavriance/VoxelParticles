@@ -1,0 +1,89 @@
+// Shared setup for every target project (versions/<minecraft>/<loader>).
+// Reads versions/<minecraft>/version.properties into `vp` and wires the shared source folders.
+
+def mcDir = projectDir.parentFile
+def loader = projectDir.name
+def props = new Properties()
+new File(mcDir, 'version.properties').withInputStream { props.load(it) }
+ext.vp = props
+ext.vpLoader = loader
+
+version = "${mod_version}+${props.minecraft_version}-${loader}"
+group = maven_group
+
+base {
+	archivesName = mod_id
+}
+
+// "src" lists extra source roots (relative to the repo root) shared by every loader of this
+// Minecraft version, "<loader>_src" the ones for a single loader.
+def roots = ['core'] + props.getProperty('src', '').tokenize(',') + props.getProperty("${loader}_src", '').tokenize(',')
+roots = roots.collect { it.trim() }.findAll { it }
+
+sourceSets {
+	main {
+		java {
+			roots.each { srcDir rootProject.file("${it}/src/main/java") }
+			srcDir new File(mcDir, 'common/src/main/java')
+		}
+		resources {
+			srcDir rootProject.file('shared/src/main/resources')
+			roots.each { srcDir rootProject.file("${it}/src/main/resources") }
+			srcDir new File(mcDir, 'common/src/main/resources')
+		}
+	}
+}
+
+int javaVersion = (props.java_version ?: '21') as int
+java {
+	sourceCompatibility = JavaVersion.toVersion(javaVersion)
+	targetCompatibility = JavaVersion.toVersion(javaVersion)
+	withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+	options.release = javaVersion
+	options.encoding = 'UTF-8'
+}
+
+processResources {
+	def expandProps = [
+		version          : mod_version,
+		mod_id           : mod_id,
+		mod_name         : mod_name,
+		mod_description  : mod_description,
+		mod_license      : mod_license,
+		minecraft_version: props.minecraft_version,
+		fabric_mc_range  : props.getProperty('fabric_mc_range', ''),
+		loader_range     : props.getProperty("${loader}_loader_range", ''),
+		java_version     : javaVersion,
+		mixin_compat     : "JAVA_${Math.min(javaVersion, 21)}",
+	]
+	inputs.properties expandProps
+	filesMatching(['fabric.mod.json', '*.mixins.json']) {
+		expand expandProps
+	}
+}
+
+jar {
+	from(rootProject.file('LICENSE')) {
+		rename { "${it}_${mod_id}" }
+	}
+	manifest {
+		attributes(
+			'Implementation-Title': mod_name,
+			'Implementation-Version': project.version,
+			'Built-On-Minecraft': props.minecraft_version
+		)
+	}
+}
+
+// Copies the release jar (the remapped one where relevant) into <root>/dist.
+def releaseJarName = project.ext.has('releaseJarTask') ? project.ext.releaseJarTask : 'jar'
+tasks.register('collectJar', Copy) {
+	group = 'build'
+	def releaseTask = tasks.named(releaseJarName)
+	dependsOn releaseTask
+	from releaseTask
+	into rootProject.file('dist')
+}

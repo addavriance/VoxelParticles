@@ -1,21 +1,21 @@
 {
   "schemaVersion": 1,
-  "id": "voxelparticles",
+  "id": "${mod_id}",
   "version": "${version}",
 
-  "name": "Voxel Particles",
-  "description": "Makes every particle 3D, even modded ones.",
+  "name": "${mod_name}",
+  "description": "${mod_description}",
   "authors": [
     "addavriance",
     "chelovek_exe"
   ],
   "contact": {
     "homepage": "https://modrinth.com/mod/voxelparticles",
-    "sources": "https://github.com/addavriance/voxelparticles",
-    "issues": "https://github.com/addavriance/voxelparticles/issues"
+    "sources": "https://github.com/addavriance/VoxelParticles",
+    "issues": "https://github.com/addavriance/VoxelParticles/issues"
   },
 
-  "license": "MIT",
+  "license": "${mod_license}",
   "icon": "assets/voxelparticles/icon.png",
 
   "environment": "client",
@@ -32,8 +32,8 @@
   ],
 
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": "${loader_range}",
     "fabric": "*",
-    "minecraft": "${minecraft_version}"
+    "minecraft": "${fabric_mc_range}"
   }
 }

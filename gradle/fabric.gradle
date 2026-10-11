@@ -1,0 +1,36 @@
+// Fabric target. The project applies 'fabric-loom' and then this script.
+
+ext.releaseJarTask = 'remapJar'
+apply from: rootProject.file('gradle/common.gradle')
+
+repositories {
+	maven {
+		name = 'TerraformersMC'
+		url = 'https://maven.terraformersmc.com/releases'
+	}
+	maven {
+		name = 'ParchmentMC'
+		url = 'https://maven.parchmentmc.org'
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${vp.minecraft_version}"
+	mappings loom.layered() {
+		officialMojangMappings()
+		if (vp.getProperty('parchment_version')) {
+			parchment("org.parchmentmc.data:parchment-${vp.minecraft_version}:${vp.parchment_version}@zip")
+		}
+	}
+	modImplementation "net.fabricmc:fabric-loader:${vp.fabric_loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${vp.fabric_api_version}"
+	modCompileOnly("com.terraformersmc:modmenu:${vp.modmenu_version}") { transitive = false }
+}
+
+loom {
+	runs {
+		configureEach {
+			runDir = 'run'
+		}
+	}
+}
