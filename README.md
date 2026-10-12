@@ -1,12 +1,12 @@
 <div align="center">
 
-<img src="docs/media/banner.svg" alt="Voxel Particles" width="100%">
+<img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/banner.svg" alt="Voxel Particles" width="100%">
 
-<a href="https://modrinth.com/mod/voxelparticles"><img src="docs/media/badges/modrinth.svg" alt="Modrinth"></a>
-<a href="https://www.curseforge.com/minecraft/mc-mods/voxelparticles"><img src="docs/media/badges/curseforge.svg" alt="CurseForge"></a>
-<a href="https://github.com/addavriance/VoxelParticles"><img src="docs/media/badges/github.svg" alt="GitHub"></a>
-<a href="https://fabricmc.net/"><img src="docs/media/badges/fabric.svg" alt="Fabric"></a>
-<a href="#supported-versions"><img src="docs/media/badges/minecraft.svg" alt="Minecraft 1.21.4 to 26.2"></a>
+<a href="https://modrinth.com/mod/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/modrinth.svg" alt="Modrinth"></a>
+<a href="https://www.curseforge.com/minecraft/mc-mods/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/curseforge.svg" alt="CurseForge"></a>
+<a href="https://github.com/addavriance/VoxelParticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/github.svg" alt="GitHub"></a>
+<a href="https://fabricmc.net/"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/fabric.svg" alt="Fabric"></a>
+<a href="#supported-versions"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/minecraft.svg" alt="Minecraft 1.21.4 to 26.2"></a>
 
 </div>
 
