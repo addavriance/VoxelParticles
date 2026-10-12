@@ -60,11 +60,7 @@ public abstract class SingleQuadParticleMixin extends Particle {
 		return self instanceof TextureSheetParticle sheet ? ((TextureSheetParticleAccessor) sheet).voxelparticles$getSprite() : null;
 	}
 
-	/**
-	 * Takes over the whole draw call. Sodium cancels render() and the camera overload of
-	 * renderRotatedQuad before they reach the method that writes the quad, so voxels have to be
-	 * emitted from here; when this returns without cancelling, the normal (flat) path runs.
-	 */
+	// Sodium cancels render() and the camera overload of renderRotatedQuad before they write the quad, so voxels are emitted from here
 	@Inject(method = "render(Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/Camera;F)V", at = @At("HEAD"), cancellable = true)
 	private void voxelparticles$render(VertexConsumer consumer, Camera camera, float partialTick, CallbackInfo ci) {
 		VoxelConfig cfg = VoxelParticles.config();
@@ -115,7 +111,7 @@ public abstract class SingleQuadParticleMixin extends Particle {
 		}
 	}
 
-	/** Covers particles that override render() but still call renderRotatedQuad themselves. */
+	// Covers particles that override render() but still call renderRotatedQuad themselves
 	@Inject(method = "renderRotatedQuad(Lcom/mojang/blaze3d/vertex/VertexConsumer;Lorg/joml/Quaternionf;FFFF)V", at = @At("HEAD"), cancellable = true)
 	private void voxelparticles$renderVoxels(
 			VertexConsumer consumer, Quaternionf rotation, float x, float y, float z,
