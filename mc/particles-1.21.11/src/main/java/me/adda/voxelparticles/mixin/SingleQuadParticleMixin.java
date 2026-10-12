@@ -62,9 +62,9 @@ public abstract class SingleQuadParticleMixin extends Particle {
 
 				float settled = MotionBridge.applyDebris(rotation, seed, time, this.voxelparticles$landedAt);
 				if (settled > 0) {
-					// Crumbs use a quarter of their sprite; lift them by half a voxel so they rest on the ground
-					int res = Math.max(1, Math.min(this.sprite.contents().width() / 4, cfg.maxResolution));
-					float lift = settled * self.getQuadSize(partialTick) * cfg.depth / res;
+					// Crumbs use a quarter of their sprite; lift them by half their thickness so they rest on the ground
+					int window = Math.max(1, this.sprite.contents().width() / 4);
+					float lift = settled * self.getQuadSize(partialTick) * cfg.depth * ParticleVoxelizer.resolutionScale(this.sprite) / window;
 					Vec3 cam = camera.position();
 
 					this.extractRotatedQuad(state, rotation,

@@ -117,6 +117,11 @@ public final class ParticleVoxelizer {
 		return true;
 	}
 
+	public static float resolutionScale(TextureAtlasSprite sprite) {
+		AtlasMeshCache cache = CACHES.get(sprite.atlasLocation(), ParticleVoxelizer::createView);
+		return cache != null ? cache.resolutionScale() : 1F;
+	}
+
 	public static boolean allowsMotion(@Nullable TextureAtlasSprite sprite) {
 		if (sprite == null) {
 			return false;

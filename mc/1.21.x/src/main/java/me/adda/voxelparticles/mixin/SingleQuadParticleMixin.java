@@ -97,9 +97,9 @@ public abstract class SingleQuadParticleMixin extends Particle {
 
 				float settled = MotionBridge.applyDebris(rotation, seed, time, this.voxelparticles$landedAt);
 				if (settled > 0) {
-					// Crumbs use a quarter of their sprite; lift them by half a voxel so they rest on the ground
-					int res = Math.max(1, Math.min(sprite.contents().width() / 4, cfg.maxResolution));
-					py += settled * getQuadSize(partialTick) * cfg.depth / res;
+					// Crumbs use a quarter of their sprite; lift them by half their thickness so they rest on the ground
+					int window = Math.max(1, sprite.contents().width() / 4);
+					py += settled * getQuadSize(partialTick) * cfg.depth * ParticleVoxelizer.resolutionScale(sprite) / window;
 				}
 			} else {
 				MotionBridge.apply(rotation, seed, time);

@@ -23,6 +23,10 @@ public final class AtlasMeshCache {
 		this.atlas = atlas;
 	}
 
+	public float resolutionScale() {
+		return atlas.resolutionScale();
+	}
+
 	// here null means the particle should stay a flat quad
 	@Nullable
 	public VoxelMesh meshFor(float u0, float u1, float v0, float v1, VoxelConfig config) {
@@ -109,6 +113,8 @@ public final class AtlasMeshCache {
 		float uL = (flipU ? left + w : left) / (float) aw, uR = (flipU ? left : left + w) / (float) aw;
 		float vT = (flipV ? top + h : top) / (float) ah, vB = (flipV ? top : top + h) / (float) ah;
 
-		return builder.build(gw, gh, solid, uL, uR, vT, vB, config.depth);
+		// Thickness follows the sprite window, not the grid, so denser resource packs keep the vanilla look
+		float depth = config.depth * atlas.resolutionScale() * Math.max(gw, gh) / Math.max(w, h);
+		return builder.build(gw, gh, solid, uL, uR, vT, vB, depth);
 	}
 }
