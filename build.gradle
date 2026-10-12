@@ -1,5 +1,6 @@
 plugins {
-	id 'fabric-loom' version '1.10.4' apply false
+	id 'net.fabricmc.fabric-loom-remap' version '1.18.4' apply false
+	id 'net.fabricmc.fabric-loom' version '1.18.4' apply false
 }
 
 // Collects every target's release jar into dist/.

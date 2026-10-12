@@ -1,6 +1,9 @@
-// Fabric target. The project applies 'fabric-loom' and then this script.
+// Fabric target. The project applies 'net.fabricmc.fabric-loom-remap' (obfuscated Minecraft, set
+// `ext.obfuscated = true` before applying this script) or 'net.fabricmc.fabric-loom' (unobfuscated
+// 26.x and newer) and then this script.
 
-ext.releaseJarTask = 'remapJar'
+boolean obfuscated = project.ext.has('obfuscated') && project.ext.obfuscated
+ext.releaseJarTask = obfuscated ? 'remapJar' : 'jar'
 apply from: rootProject.file('gradle/common.gradle')
 
 repositories {
@@ -16,15 +19,21 @@ repositories {
 
 dependencies {
 	minecraft "com.mojang:minecraft:${vp.minecraft_version}"
-	mappings loom.layered() {
-		officialMojangMappings()
-		if (vp.getProperty('parchment_version')) {
-			parchment("org.parchmentmc.data:parchment-${vp.minecraft_version}:${vp.parchment_version}@zip")
+	if (obfuscated) {
+		mappings loom.layered() {
+			officialMojangMappings()
+			if (vp.getProperty('parchment_version')) {
+				parchment("org.parchmentmc.data:parchment-${vp.minecraft_version}:${vp.parchment_version}@zip")
+			}
 		}
+		modImplementation "net.fabricmc:fabric-loader:${vp.fabric_loader_version}"
+		modImplementation "net.fabricmc.fabric-api:fabric-api:${vp.fabric_api_version}"
+		modCompileOnly("com.terraformersmc:modmenu:${vp.modmenu_version}") { transitive = false }
+	} else {
+		implementation "net.fabricmc:fabric-loader:${vp.fabric_loader_version}"
+		implementation "net.fabricmc.fabric-api:fabric-api:${vp.fabric_api_version}"
+		compileOnly("com.terraformersmc:modmenu:${vp.modmenu_version}") { transitive = false }
 	}
-	modImplementation "net.fabricmc:fabric-loader:${vp.fabric_loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${vp.fabric_api_version}"
-	modCompileOnly("com.terraformersmc:modmenu:${vp.modmenu_version}") { transitive = false }
 }
 
 loom {
