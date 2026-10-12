@@ -19,8 +19,6 @@ import java.util.IdentityHashMap;
 import java.util.Map;
 
 public final class ParticleVoxelizer {
-	public enum Kind { PARTICLE, BLOCK, ITEM }
-
 	private static final AtlasCaches<ResourceLocation> CACHES = new AtlasCaches<>();
 	private static final Map<TextureAtlasSprite, Boolean> EXCLUDED = new IdentityHashMap<>();
 	private static final VoxelEmitter EMITTER = new VoxelEmitter();
@@ -54,7 +52,7 @@ public final class ParticleVoxelizer {
 	}
 
 	public static boolean render(
-			VertexConsumer builder, @Nullable TextureAtlasSprite sprite, Kind kind,
+			VertexConsumer builder, @Nullable TextureAtlasSprite sprite, VoxelConfig.Category category,
 			float x, float y, float z, float qx, float qy, float qz, float qw, float scale,
 			float u0, float u1, float v0, float v1, int color, int light
 	) {
@@ -63,7 +61,8 @@ public final class ParticleVoxelizer {
 			return false;
 		}
 
-		if ((kind == Kind.BLOCK && !cfg.blockParticles) || (kind == Kind.ITEM && !cfg.itemParticles)) {
+		VoxelConfig.Settings settings = cfg.settings(category);
+		if (!settings.enabled) {
 			return false;
 		}
 
@@ -82,7 +81,7 @@ public final class ParticleVoxelizer {
 				return false;
 			}
 
-			VoxelMesh mesh = cache.meshFor(u0, u1, v0, v1, cfg);
+			VoxelMesh mesh = cache.meshFor(u0, u1, v0, v1, category, cfg);
 			if (mesh == null) {
 				return false;
 			}
@@ -100,7 +99,7 @@ public final class ParticleVoxelizer {
 				sink = SINK;
 			}
 
-			EMITTER.emit(mesh, sink, x, y, z, qx, qy, qz, qw, scale, color, light, cfg.shading);
+			EMITTER.emit(mesh, sink, x, y, z, qx, qy, qz, qw, scale, color, light, settings.shading);
 			return true;
 		} finally {
 			RenderGuard.exit();

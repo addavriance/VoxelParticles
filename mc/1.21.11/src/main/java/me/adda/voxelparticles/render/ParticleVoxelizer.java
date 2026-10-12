@@ -29,6 +29,7 @@ public final class ParticleVoxelizer {
 	private static int cachedGeneration = -1;
 
 	private static @Nullable AtlasMeshCache current;
+	private static VoxelConfig.Category category = VoxelConfig.Category.PARTICLE;
 
 	private ParticleVoxelizer() {
 	}
@@ -61,10 +62,12 @@ public final class ParticleVoxelizer {
 
 		checkGeneration();
 		Identifier location = layer.textureAtlasLocation();
-		boolean blocks = location.equals(TextureAtlas.LOCATION_BLOCKS);
-		boolean items = location.equals(TextureAtlas.LOCATION_ITEMS);
 
-		if ((blocks && !cfg.blockParticles) || (items && !cfg.itemParticles)) {
+		category = location.equals(TextureAtlas.LOCATION_BLOCKS) ? VoxelConfig.Category.BLOCK :
+			location.equals(TextureAtlas.LOCATION_ITEMS) ? VoxelConfig.Category.ITEM :
+			VoxelConfig.Category.PARTICLE;
+
+		if (!cfg.settings(category).enabled) {
 			return;
 		}
 
@@ -95,7 +98,7 @@ public final class ParticleVoxelizer {
 			return false;
 		}
 
-		VoxelMesh mesh = cache.meshFor(u0, u1, v0, v1, cfg);
+		VoxelMesh mesh = cache.meshFor(u0, u1, v0, v1, category, cfg);
 		if (mesh == null) {
 			return false;
 		}
@@ -113,7 +116,7 @@ public final class ParticleVoxelizer {
 			sink = SINK;
 		}
 
-		EMITTER.emit(mesh, sink, x, y, z, qx, qy, qz, qw, scale, color, light, cfg.shading);
+		EMITTER.emit(mesh, sink, x, y, z, qx, qy, qz, qw, scale, color, light, cfg.settings(category).shading);
 		return true;
 	}
 

@@ -45,26 +45,33 @@ public abstract class SingleQuadParticleMixin extends Particle {
 			SingleQuadParticle self, QuadParticleRenderState state, Camera camera,
 			Quaternionf rotation, float partialTick, Operation<Void> original
 	) {
+		Object particle = this;
+		VoxelConfig.Category category =
+			particle instanceof TerrainParticle ? VoxelConfig.Category.BLOCK :
+			particle instanceof BreakingItemParticle ? VoxelConfig.Category.ITEM :
+			VoxelConfig.Category.PARTICLE;
+
 		VoxelConfig cfg = VoxelParticles.config();
+		VoxelConfig.Settings settings = cfg.settings(category);
+
 		if (
-				cfg.enabled && cfg.motion != VoxelConfig.Motion.BILLBOARD &&
+				cfg.enabled && settings.enabled && settings.motion != VoxelConfig.Motion.BILLBOARD &&
 				ParticleVoxelizer.allowsMotion(this.sprite) &&
 				self.getFacingCameraMode() == SingleQuadParticle.FacingCameraMode.LOOKAT_XYZ // Particles with their own orientation (flat ripples, vertical streaks) keep it
 		) {
 			int seed = System.identityHashCode(this) * 0x9E3779B9;
 			float time = this.age + partialTick;
 
-			Object particle = this;
-			if (cfg.tumbleDebris && (particle instanceof TerrainParticle || particle instanceof BreakingItemParticle)) {
+			if (settings.tumbleDebris && category != VoxelConfig.Category.PARTICLE) {
 				if (this.onGround && this.voxelparticles$landedAt < 0) {
 					this.voxelparticles$landedAt = time;
 				}
 
-				float settled = MotionBridge.applyDebris(rotation, seed, time, this.voxelparticles$landedAt);
+				float settled = MotionBridge.applyDebris(rotation, settings, seed, time, this.voxelparticles$landedAt);
 				if (settled > 0) {
 					// Crumbs use a quarter of their sprite; lift them by half a voxel so they rest on the ground
 					int res = Math.max(1, Math.min(this.sprite.contents().width() / 4, cfg.maxResolution));
-					float lift = settled * self.getQuadSize(partialTick) * cfg.depth / res;
+					float lift = settled * self.getQuadSize(partialTick) * settings.depth / res;
 					Vec3 cam = camera.position();
 
 					this.extractRotatedQuad(state, rotation,
@@ -76,7 +83,7 @@ public abstract class SingleQuadParticleMixin extends Particle {
 					return;
 				}
 			} else {
-				MotionBridge.apply(rotation, seed, time);
+				MotionBridge.apply(rotation, settings, seed, time);
 			}
 		}
 

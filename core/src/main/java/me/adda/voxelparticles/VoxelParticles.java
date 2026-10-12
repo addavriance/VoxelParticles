@@ -22,7 +22,7 @@ public final class VoxelParticles {
 		configPath = configDir.resolve(MOD_ID + ".json");
 		config = VoxelConfig.load(configPath);
 		shapeKey = config.shapeKey();
-		LOG.info("Voxel Particles loaded (motion={}, depth={})", config.motion, config.depth);
+		LOG.info("Voxel Particles loaded");
 	}
 
 	public static VoxelConfig config() {

@@ -26,22 +26,42 @@ public final class VoxelConfig {
 		TUMBLE
 	}
 
+	public enum Category {
+		BLOCK,
+		ITEM,
+		PARTICLE
+	}
+
+	public static final class Settings {
+		public boolean enabled = true;
+		public Motion motion = Motion.SWAY;
+
+		public float depth = 1.0F;
+
+		public float shading = 1.0F;
+
+		public float motionSpeed = 1.0F;
+
+		public boolean tumbleDebris = true;
+
+		void sanitize() {
+			if (motion == null) motion = Motion.SWAY;
+
+			depth = clamp(depth, 0.1F, 4F);
+			shading = clamp(shading, 0F, 1F);
+			motionSpeed = clamp(motionSpeed, 0F, 5F);
+		}
+	}
+
 	public boolean enabled = true;
-	public Motion motion = Motion.SWAY;
-
-	public float depth = 1.0F;
-
-	public float shading = 1.0F;
-
-	public float motionSpeed = 1.0F;
 
 	public int maxResolution = 16;
 
 	public float lodDistance = 64.0F;
 
-	public boolean tumbleDebris = true;
-	public boolean blockParticles = true;
-	public boolean itemParticles = true;
+	public Settings blocks = new Settings();
+	public Settings items = new Settings();
+	public Settings particles = new Settings();
 
 	public List<String> excludedSprites = new ArrayList<>(List.of(
 		"minecraft:sweep_*",
@@ -78,16 +98,27 @@ public final class VoxelConfig {
 		return false;
 	}
 
+	public Settings settings(Category category) {
+		return switch (category) {
+			case BLOCK -> blocks;
+			case ITEM -> items;
+			case PARTICLE -> particles;
+		};
+	}
+
 	public String shapeKey() {
-		return depth + "|" + maxResolution + "|" + excludedSprites;
+		return blocks.depth + "|" + items.depth + "|" + particles.depth + "|" + maxResolution + "|" + excludedSprites;
 	}
 
 	public void sanitize() {
-		if (motion == null) motion = Motion.SWAY;
+		if (blocks == null) blocks = new Settings();
+		if (items == null) items = new Settings();
+		if (particles == null) particles = new Settings();
 
-		depth = clamp(depth, 0.1F, 4F);
-		shading = clamp(shading, 0F, 1F);
-		motionSpeed = clamp(motionSpeed, 0F, 5F);
+		blocks.sanitize();
+		items.sanitize();
+		particles.sanitize();
+
 		maxResolution = Math.max(4, Math.min(64, maxResolution));
 		lodDistance = Math.max(0F, lodDistance);
 

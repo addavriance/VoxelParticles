@@ -81,28 +81,30 @@ public abstract class SingleQuadParticleMixin extends Particle {
 		float py = (float) (Mth.lerp(partialTick, this.yo, this.y) - cam.y());
 		float pz = (float) (Mth.lerp(partialTick, this.zo, this.z) - cam.z());
 
+		VoxelConfig.Category category = voxelparticles$category();
+		VoxelConfig.Settings settings = cfg.settings(category);
+
 		if (
-				cfg.motion != VoxelConfig.Motion.BILLBOARD &&
+				settings.enabled && settings.motion != VoxelConfig.Motion.BILLBOARD &&
 				ParticleVoxelizer.allowsMotion(sprite) &&
 				facing == SingleQuadParticle.FacingCameraMode.LOOKAT_XYZ // Particles with their own orientation (flat ripples, vertical streaks) keep it
 		) {
 			int seed = System.identityHashCode(this) * 0x9E3779B9;
 			float time = this.age + partialTick;
 
-			Object particle = this;
-			if (cfg.tumbleDebris && (particle instanceof TerrainParticle || particle instanceof BreakingItemParticle)) {
+			if (settings.tumbleDebris && category != VoxelConfig.Category.PARTICLE) {
 				if (this.onGround && this.voxelparticles$landedAt < 0) {
 					this.voxelparticles$landedAt = time;
 				}
 
-				float settled = MotionBridge.applyDebris(rotation, seed, time, this.voxelparticles$landedAt);
+				float settled = MotionBridge.applyDebris(rotation, settings, seed, time, this.voxelparticles$landedAt);
 				if (settled > 0) {
 					// Crumbs use a quarter of their sprite; lift them by half their thickness so they rest on the ground
 					int window = Math.max(1, sprite.contents().width() / 4);
-					py += settled * getQuadSize(partialTick) * cfg.depth / ParticleVoxelizer.referenceResolution(sprite, window);
+					py += settled * getQuadSize(partialTick) * settings.depth / ParticleVoxelizer.referenceResolution(sprite, window);
 				}
 			} else {
-				MotionBridge.apply(rotation, seed, time);
+				MotionBridge.apply(rotation, settings, seed, time);
 			}
 		}
 
@@ -127,18 +129,21 @@ public abstract class SingleQuadParticleMixin extends Particle {
 			VertexConsumer consumer, @Nullable TextureAtlasSprite sprite, Quaternionf rotation,
 			float x, float y, float z, float partialTick
 	) {
-		Object particle = this;
-		ParticleVoxelizer.Kind kind =
-				particle instanceof TerrainParticle ? ParticleVoxelizer.Kind.BLOCK :
-				particle instanceof BreakingItemParticle ? ParticleVoxelizer.Kind.ITEM :
-				ParticleVoxelizer.Kind.PARTICLE;
-
 		int color = voxelparticles$channel(this.alpha) << 24 | voxelparticles$channel(this.rCol) << 16
 			| voxelparticles$channel(this.gCol) << 8 | voxelparticles$channel(this.bCol);
 
-		return ParticleVoxelizer.render(consumer, sprite, kind, x, y, z,
+		return ParticleVoxelizer.render(consumer, sprite, voxelparticles$category(), x, y, z,
 			rotation.x, rotation.y, rotation.z, rotation.w, getQuadSize(partialTick),
 			getU0(), getU1(), getV0(), getV1(), color, getLightColor(partialTick));
+	}
+
+	@Unique
+	private VoxelConfig.Category voxelparticles$category() {
+		Object particle = this;
+
+		return particle instanceof TerrainParticle ? VoxelConfig.Category.BLOCK :
+			particle instanceof BreakingItemParticle ? VoxelConfig.Category.ITEM :
+			VoxelConfig.Category.PARTICLE;
 	}
 
 	@Unique

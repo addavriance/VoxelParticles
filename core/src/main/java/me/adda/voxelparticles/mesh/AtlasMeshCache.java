@@ -30,7 +30,7 @@ public final class AtlasMeshCache {
 
 	// here null means the particle should stay a flat quad
 	@Nullable
-	public VoxelMesh meshFor(float u0, float u1, float v0, float v1, VoxelConfig config) {
+	public VoxelMesh meshFor(float u0, float u1, float v0, float v1, VoxelConfig.Category category, VoxelConfig config) {
 		int aw = atlas.width(), ah = atlas.height();
 		float tx0 = u0 * aw, tx1 = u1 * aw, ty0 = v0 * ah, ty1 = v1 * ah;
 
@@ -44,7 +44,7 @@ public final class AtlasMeshCache {
 			return null;
 		}
 
-		long key = left | (long) top << 14 | (long) w << 28 | (long) h << 36 | (flipU ? 1L << 44 : 0) | (flipV ? 1L << 45 : 0);
+		long key = left | (long) top << 14 | (long) w << 28 | (long) h << 36 | (flipU ? 1L << 44 : 0) | (flipV ? 1L << 45 : 0) | (long) category.ordinal() << 46;
 		VoxelMesh mesh = meshes.get(key);
 
 		if (mesh == null) {
@@ -62,7 +62,7 @@ public final class AtlasMeshCache {
 				meshes.clear();
 			}
 
-			mesh = build(left, top, w, h, flipU, flipV, aw, ah, config);
+			mesh = build(left, top, w, h, flipU, flipV, aw, ah, config.settings(category).depth, config);
 
 			meshes.put(key, mesh);
 			budgetSpent += System.nanoTime() - now;
@@ -70,7 +70,7 @@ public final class AtlasMeshCache {
 		return mesh == NONE ? null : mesh;
 	}
 
-	private VoxelMesh build(int left, int top, int w, int h, boolean flipU, boolean flipV, int aw, int ah, VoxelConfig config) {
+	private VoxelMesh build(int left, int top, int w, int h, boolean flipU, boolean flipV, int aw, int ah, float thickness, VoxelConfig config) {
 		AtlasView.SpriteView sprite = atlas.spriteAt(left + w / 2, top + h / 2);
 		if (sprite == null || config.isExcluded(sprite.id())) {
 			return NONE;
@@ -114,7 +114,7 @@ public final class AtlasMeshCache {
 		float uL = (flipU ? left + w : left) / (float) aw, uR = (flipU ? left : left + w) / (float) aw;
 		float vT = (flipV ? top + h : top) / (float) ah, vB = (flipV ? top : top + h) / (float) ah;
 
-		float depth = config.depth * Math.max(gw, gh) / referenceResolution(w, h, config);
+		float depth = thickness * Math.max(gw, gh) / referenceResolution(w, h, config);
 		return builder.build(gw, gh, solid, uL, uR, vT, vB, depth);
 	}
 }

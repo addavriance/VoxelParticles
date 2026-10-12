@@ -1,6 +1,5 @@
 package me.adda.voxelparticles.motion;
 
-import me.adda.voxelparticles.VoxelParticles;
 import me.adda.voxelparticles.config.VoxelConfig;
 
 public final class ParticleMotion {
@@ -9,12 +8,12 @@ public final class ParticleMotion {
 
 	private ParticleMotion() {}
 
-	public static float applyDebris(Quat rotation, int seed, float time, float landedAt) {
+	public static float applyDebris(Quat rotation, VoxelConfig.Settings settings, int seed, float time, float landedAt) {
 		float phase = phase(seed);
 		float[] axis = randomAxis(seed);
 		float spinTime = landedAt >= 0 ? Math.min(time, landedAt) : time;
 
-		rotation.rotateAxis(phase + spinTime * 0.45F * VoxelParticles.config().motionSpeed, axis[0], axis[1], axis[2]);
+		rotation.rotateAxis(phase + spinTime * 0.45F * settings.motionSpeed, axis[0], axis[1], axis[2]);
 
 		if (landedAt < 0) {
 			return 0F;
@@ -29,16 +28,11 @@ public final class ParticleMotion {
 		return t;
 	}
 
-	public static void apply(Quat rotation, int seed, float time) {
-		VoxelConfig cfg = VoxelParticles.config();
-		if (!cfg.enabled) {
-			return;
-		}
-
+	public static void apply(Quat rotation, VoxelConfig.Settings settings, int seed, float time) {
 		float phase = phase(seed);
-		float speed = cfg.motionSpeed;
+		float speed = settings.motionSpeed;
 
-		switch (cfg.motion) {
+		switch (settings.motion) {
 			case BILLBOARD -> {
 			}
 			case SWAY -> {
