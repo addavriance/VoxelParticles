@@ -27,11 +27,15 @@ public final class McAtlasView implements AtlasView {
 		this.height = accessor.voxelparticles$getHeight();
 		this.cellsX = (width + CELL - 1) / CELL;
 
-		ResolutionScale scale = new ResolutionScale();
+		ResolutionScale vanillaScale = new ResolutionScale();
+		ResolutionScale allScale = new ResolutionScale();
 
 		for (TextureAtlasSprite s : accessor.voxelparticles$getTexturesByName().values()) {
 			Sprite sprite = new Sprite(s);
-			scale.add(sprite.w);
+			allScale.add(sprite.w);
+			if (s.contents().name().getNamespace().equals("minecraft")) {
+				vanillaScale.add(sprite.w);
+			}
 			for (int cy = sprite.y / CELL; cy <= (sprite.y + sprite.h - 1) / CELL; cy++) {
 				for (int cx = sprite.x / CELL; cx <= (sprite.x + sprite.w - 1) / CELL; cx++) {
 					cells.computeIfAbsent(cy * cellsX + cx, k -> new ArrayList<>(2)).add(sprite);
@@ -39,7 +43,9 @@ public final class McAtlasView implements AtlasView {
 			}
 		}
 
+		// Only vanilla-named sprites count (a resource pack replaces those), mods can ship thousands of big ones
 		// Vanilla particle sprites are mostly 8px, blocks and items 16px
+		ResolutionScale scale = vanillaScale.isEmpty() ? allScale : vanillaScale;
 		this.resolutionScale = scale.relativeTo(atlas.location().getPath().contains("particles") ? 8 : 16);
 	}
 

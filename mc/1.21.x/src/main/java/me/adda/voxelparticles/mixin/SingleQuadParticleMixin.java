@@ -99,7 +99,7 @@ public abstract class SingleQuadParticleMixin extends Particle {
 				if (settled > 0) {
 					// Crumbs use a quarter of their sprite; lift them by half their thickness so they rest on the ground
 					int window = Math.max(1, sprite.contents().width() / 4);
-					py += settled * getQuadSize(partialTick) * cfg.depth * ParticleVoxelizer.resolutionScale(sprite) / window;
+					py += settled * getQuadSize(partialTick) * cfg.depth / ParticleVoxelizer.referenceResolution(sprite, window);
 				}
 			} else {
 				MotionBridge.apply(rotation, seed, time);

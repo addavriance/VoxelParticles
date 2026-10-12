@@ -23,8 +23,9 @@ public final class AtlasMeshCache {
 		this.atlas = atlas;
 	}
 
-	public float resolutionScale() {
-		return atlas.resolutionScale();
+	// Texels a vanilla-sized sprite would use for this window, so denser resource packs keep the vanilla thickness and big sprites stay capped
+	public float referenceResolution(int w, int h, VoxelConfig config) {
+		return Math.max(1F, Math.min(Math.max(w, h) / atlas.resolutionScale(), config.maxResolution));
 	}
 
 	// here null means the particle should stay a flat quad
@@ -113,8 +114,7 @@ public final class AtlasMeshCache {
 		float uL = (flipU ? left + w : left) / (float) aw, uR = (flipU ? left : left + w) / (float) aw;
 		float vT = (flipV ? top + h : top) / (float) ah, vB = (flipV ? top : top + h) / (float) ah;
 
-		// Thickness follows the sprite window, not the grid, so denser resource packs keep the vanilla look
-		float depth = config.depth * atlas.resolutionScale() * Math.max(gw, gh) / Math.max(w, h);
+		float depth = config.depth * Math.max(gw, gh) / referenceResolution(w, h, config);
 		return builder.build(gw, gh, solid, uL, uR, vT, vB, depth);
 	}
 }

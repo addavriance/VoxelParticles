@@ -64,7 +64,7 @@ public abstract class SingleQuadParticleMixin extends Particle {
 				if (settled > 0) {
 					// Crumbs use a quarter of their sprite; lift them by half their thickness so they rest on the ground
 					int window = Math.max(1, this.sprite.contents().width() / 4);
-					float lift = settled * self.getQuadSize(partialTick) * cfg.depth * ParticleVoxelizer.resolutionScale(this.sprite) / window;
+					float lift = settled * self.getQuadSize(partialTick) * cfg.depth / ParticleVoxelizer.referenceResolution(this.sprite, window);
 					Vec3 cam = camera.position();
 
 					this.extractRotatedQuad(state, rotation,

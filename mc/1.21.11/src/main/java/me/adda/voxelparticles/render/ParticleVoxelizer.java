@@ -117,9 +117,9 @@ public final class ParticleVoxelizer {
 		return true;
 	}
 
-	public static float resolutionScale(TextureAtlasSprite sprite) {
+	public static float referenceResolution(TextureAtlasSprite sprite, int window) {
 		AtlasMeshCache cache = CACHES.get(sprite.atlasLocation(), ParticleVoxelizer::createView);
-		return cache != null ? cache.resolutionScale() : 1F;
+		return cache != null ? cache.referenceResolution(window, window, VoxelParticles.config()) : window;
 	}
 
 	public static boolean allowsMotion(@Nullable TextureAtlasSprite sprite) {

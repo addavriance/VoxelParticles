@@ -9,6 +9,10 @@ public final class ResolutionScale {
 
 	private final Int2IntOpenHashMap counts = new Int2IntOpenHashMap();
 
+	public boolean isEmpty() {
+		return counts.isEmpty();
+	}
+
 	public void add(int spriteWidth) {
 		counts.addTo(spriteWidth, 1);
 	}
