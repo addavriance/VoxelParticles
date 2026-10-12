@@ -119,3 +119,4 @@ run/
 
 # Release jars collected by the dist task
 dist/
+/docs/media/tools
