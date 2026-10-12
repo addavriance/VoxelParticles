@@ -7,7 +7,7 @@
 <a href="https://github.com/addavriance/VoxelParticles"><img src="docs/media/badges/github.svg" alt="GitHub"></a>
 <a href="https://fabricmc.net/"><img src="docs/media/badges/fabric.svg" alt="Fabric"></a>
 <a href="#supported-versions"><img src="docs/media/badges/minecraft.svg" alt="Minecraft 1.21.4 to 26.2"></a>
-<video src="docs/media/break_block.mp4" width="100%">
+<video src="docs/media/break_block.mp4" width="100%"></video>
 
 </div>
 
@@ -23,16 +23,16 @@ is picked up automatically.
 
 <table>
   <tr>
-    <td align="center"><video src="docs/media/campfire.mp4"><br><sub>Campfire smoke with real depth</sub></td>
-    <td align="center" width="50%"><video src="docs/media/eating.mp4"><br><sub>Crumbs of the food you eat</sub></td>
+    <td align="center"><video src="docs/media/campfire.mp4"></video><br><sub>Campfire smoke with real depth</sub></td>
+    <td align="center" width="50%"><video src="docs/media/eating.mp4"></video><br><sub>Crumbs of the food you eat</sub></td>
   </tr>
   <tr>
-    <td align="center"><video src="docs/media/potion.mp4"><br><sub>Potion and spell particles</sub></td>
-    <td align="center"><video src="docs/media/modded.mp4"><br><sub>Particles from other mods</sub></td>
+    <td align="center"><video src="docs/media/potion.mp4"></video><br><sub>Potion and spell particles</sub></td>
+    <td align="center"><video src="docs/media/modded.mp4"></video><br><sub>Particles from other mods</sub></td>
   </tr>
   <tr>
-    <td align="center"><video src="docs/media/comparison.mp4"><br><sub>On and off, side by side</sub></td>
-    <td align="center"><video src="docs/media/config.mp4"><br><sub>In-game settings</sub></td>
+    <td align="center"><video src="docs/media/comparison.mp4"></video><br><sub>On and off, side by side</sub></td>
+    <td align="center"><video src="docs/media/config.mp4"></video><br><sub>In-game settings</sub></td>
   </tr>
 </table>
 
