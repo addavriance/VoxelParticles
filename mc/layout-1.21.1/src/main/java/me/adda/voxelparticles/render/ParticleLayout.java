@@ -2,6 +2,7 @@ package me.adda.voxelparticles.render;
 
 import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.VertexFormatElement;
+
 final class ParticleLayout {
 	static final boolean VALID;
 	static final int STRIDE, POSITION, UV0, COLOR, UV2;
