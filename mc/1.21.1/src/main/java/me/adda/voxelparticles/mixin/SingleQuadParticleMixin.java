@@ -1,7 +1,5 @@
 package me.adda.voxelparticles.mixin;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import me.adda.voxelparticles.VoxelParticles;
 import me.adda.voxelparticles.config.VoxelConfig;
@@ -28,7 +26,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(value = SingleQuadParticle.class, priority = 900)
 public abstract class SingleQuadParticleMixin extends Particle {
-	private static final String RENDER_ROTATED = "Lnet/minecraft/client/particle/SingleQuadParticle;renderRotatedQuad(Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/Camera;Lorg/joml/Quaternionf;F)V";
+	@Unique
+	private static final Quaternionf voxelparticles$ROTATION = new Quaternionf();
 
 	@Unique
 	private float voxelparticles$landedAt = -1F;
@@ -38,7 +37,7 @@ public abstract class SingleQuadParticleMixin extends Particle {
 	}
 
 	@Shadow
-	protected abstract void renderRotatedQuad(VertexConsumer consumer, Quaternionf rotation, float x, float y, float z, float partialTick);
+	public abstract SingleQuadParticle.FacingCameraMode getFacingCameraMode();
 
 	@Shadow
 	public abstract float getQuadSize(float partialTick);
@@ -61,17 +60,35 @@ public abstract class SingleQuadParticleMixin extends Particle {
 		return self instanceof TextureSheetParticle sheet ? ((TextureSheetParticleAccessor) sheet).voxelparticles$getSprite() : null;
 	}
 
-	@WrapOperation(method = "render", at = @At(value = "INVOKE", target = RENDER_ROTATED))
-	private void voxelparticles$applyMotion(
-			SingleQuadParticle self, VertexConsumer consumer, Camera camera,
-			Quaternionf rotation, float partialTick, Operation<Void> original
-	) {
+	/**
+	 * Takes over the whole draw call. Sodium cancels render() and the camera overload of
+	 * renderRotatedQuad before they reach the method that writes the quad, so voxels have to be
+	 * emitted from here; when this returns without cancelling, the normal (flat) path runs.
+	 */
+	@Inject(method = "render(Lcom/mojang/blaze3d/vertex/VertexConsumer;Lnet/minecraft/client/Camera;F)V", at = @At("HEAD"), cancellable = true)
+	private void voxelparticles$render(VertexConsumer consumer, Camera camera, float partialTick, CallbackInfo ci) {
 		VoxelConfig cfg = VoxelParticles.config();
 		TextureAtlasSprite sprite = voxelparticles$sprite();
+		if (!cfg.enabled || sprite == null) {
+			return;
+		}
+
+		SingleQuadParticle.FacingCameraMode facing = getFacingCameraMode();
+		Quaternionf rotation = voxelparticles$ROTATION.identity();
+		facing.setRotation(rotation, camera, partialTick);
+		if (this.roll != 0.0F) {
+			rotation.rotateZ(Mth.lerp(partialTick, this.oRoll, this.roll));
+		}
+
+		Vec3 cam = camera.getPosition();
+		float px = (float) (Mth.lerp(partialTick, this.xo, this.x) - cam.x());
+		float py = (float) (Mth.lerp(partialTick, this.yo, this.y) - cam.y());
+		float pz = (float) (Mth.lerp(partialTick, this.zo, this.z) - cam.z());
+
 		if (
-				cfg.enabled && cfg.motion != VoxelConfig.Motion.BILLBOARD &&
+				cfg.motion != VoxelConfig.Motion.BILLBOARD &&
 				ParticleVoxelizer.allowsMotion(sprite) &&
-				self.getFacingCameraMode() == SingleQuadParticle.FacingCameraMode.LOOKAT_XYZ // Particles with their own orientation (flat ripples, vertical streaks) keep it
+				facing == SingleQuadParticle.FacingCameraMode.LOOKAT_XYZ // Particles with their own orientation (flat ripples, vertical streaks) keep it
 		) {
 			int seed = System.identityHashCode(this) * 0x9E3779B9;
 			float time = this.age + partialTick;
@@ -86,28 +103,33 @@ public abstract class SingleQuadParticleMixin extends Particle {
 				if (settled > 0) {
 					// Crumbs use a quarter of their sprite; lift them by half a voxel so they rest on the ground
 					int res = Math.max(1, Math.min(sprite.contents().width() / 4, cfg.maxResolution));
-					float lift = settled * getQuadSize(partialTick) * cfg.depth / res;
-					Vec3 cam = camera.getPosition();
-
-					this.renderRotatedQuad(consumer, rotation,
-						(float) (Mth.lerp(partialTick, this.xo, this.x) - cam.x()),
-						(float) (Mth.lerp(partialTick, this.yo, this.y) - cam.y()) + lift,
-						(float) (Mth.lerp(partialTick, this.zo, this.z) - cam.z()),
-						partialTick);
-
-					return;
+					py += settled * getQuadSize(partialTick) * cfg.depth / res;
 				}
 			} else {
 				MotionBridge.apply(rotation, seed, time);
 			}
 		}
-		original.call(self, consumer, camera, rotation, partialTick);
+
+		if (voxelparticles$draw(consumer, sprite, rotation, px, py, pz, partialTick)) {
+			ci.cancel();
+		}
 	}
 
+	/** Covers particles that override render() but still call renderRotatedQuad themselves. */
 	@Inject(method = "renderRotatedQuad(Lcom/mojang/blaze3d/vertex/VertexConsumer;Lorg/joml/Quaternionf;FFFF)V", at = @At("HEAD"), cancellable = true)
 	private void voxelparticles$renderVoxels(
 			VertexConsumer consumer, Quaternionf rotation, float x, float y, float z,
 			float partialTick, CallbackInfo ci
+	) {
+		if (voxelparticles$draw(consumer, voxelparticles$sprite(), rotation, x, y, z, partialTick)) {
+			ci.cancel();
+		}
+	}
+
+	@Unique
+	private boolean voxelparticles$draw(
+			VertexConsumer consumer, @Nullable TextureAtlasSprite sprite, Quaternionf rotation,
+			float x, float y, float z, float partialTick
 	) {
 		Object particle = this;
 		ParticleVoxelizer.Kind kind =
@@ -118,11 +140,9 @@ public abstract class SingleQuadParticleMixin extends Particle {
 		int color = voxelparticles$channel(this.alpha) << 24 | voxelparticles$channel(this.rCol) << 16
 			| voxelparticles$channel(this.gCol) << 8 | voxelparticles$channel(this.bCol);
 
-		if (ParticleVoxelizer.render(consumer, voxelparticles$sprite(), kind, x, y, z,
+		return ParticleVoxelizer.render(consumer, sprite, kind, x, y, z,
 			rotation.x, rotation.y, rotation.z, rotation.w, getQuadSize(partialTick),
-			getU0(), getU1(), getV0(), getV1(), color, getLightColor(partialTick))) {
-			ci.cancel();
-		}
+			getU0(), getU1(), getV0(), getV1(), color, getLightColor(partialTick));
 	}
 
 	@Unique
