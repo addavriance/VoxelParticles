@@ -145,4 +145,3 @@ Project layout:
 | `versions/<minecraft>/` | One target each; `version.properties` lists the layers it uses |
 
 </details>
-<img width="1014" height="126" alt="minecraft_title (4)" src="https://github.com/user-attachments/assets/c3b87d97-e388-43ae-8f17-91db40703294" />
