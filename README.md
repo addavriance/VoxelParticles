@@ -7,34 +7,38 @@
 <a href="https://github.com/addavriance/VoxelParticles"><img src="docs/media/badges/github.svg" alt="GitHub"></a>
 <a href="https://fabricmc.net/"><img src="docs/media/badges/fabric.svg" alt="Fabric"></a>
 <a href="#supported-versions"><img src="docs/media/badges/minecraft.svg" alt="Minecraft 1.21.4 to 26.2"></a>
-<video src="docs/media/break_block.mp4" width="100%"></video>
 
 </div>
 
 Vanilla particles are flat cards that always face the camera. Voxel Particles turns each one into a small
-3D model built from the sprite's own pixels. The shape stays exact, holes included: a critical hit cross is
-still a cross and a chip of stone is still a chip, but now it has sides you can see when it sways, spins or
-lands on the ground.
+3D model built from the sprite's own pixels.
 
-Nothing to set up. No resource pack, no per-particle support: every sprite particle, vanilla or modded,
-is picked up automatically.
+Every sprite particle, vanilla or modded, is picked up automatically (even resourcepacks).
 
 ## Showcase
 
-<table>
-  <tr>
-    <td align="center"><video src="docs/media/campfire.mp4"></video><br><sub>Campfire smoke with real depth</sub></td>
-    <td align="center" width="50%"><video src="docs/media/eating.mp4"></video><br><sub>Crumbs of the food you eat</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><video src="docs/media/potion.mp4"></video><br><sub>Potion and spell particles</sub></td>
-    <td align="center"><video src="docs/media/modded.mp4"></video><br><sub>Particles from other mods</sub></td>
-  </tr>
-  <tr>
-    <td align="center"><video src="docs/media/comparison.mp4"></video><br><sub>On and off, side by side</sub></td>
-    <td align="center"><video src="docs/media/config.mp4"></video><br><sub>In-game settings</sub></td>
-  </tr>
-</table>
+### Break block particles
+![break_block](https://imgur.com/IniYDRO.gif)
+
+### Campfire smoke with real depth
+![campfire](https://imgur.com/rT4IiVZ.gif)
+
+### Crumbs of the food you eat
+![eating](https://imgur.com/Qfr1P4a.gif)
+
+### Potions effects particles
+![potions](https://imgur.com/2H9THRY.gif)
+
+### Modded particles (as example Fire Staff from [Wizards](https://modrinth.com/mod/wizards))
+![modded](https://imgur.com/9EFVCfB.gif)
+
+### On and off comparison
+![comparison](https://imgur.com/uCMRdMK.gif)
+
+### In-game settings
+<img width="869" height="471" alt="image" src="https://github.com/user-attachments/assets/763a5506-508f-4fae-8eb9-16f289ce7a86" />
+<img width="873" height="473" alt="image" src="https://github.com/user-attachments/assets/2caeb1f4-41a8-4ecb-bffb-1ef8896581b3" />
+
 
 ## Features
 
