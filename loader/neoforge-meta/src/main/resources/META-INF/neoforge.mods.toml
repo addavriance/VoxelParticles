@@ -9,6 +9,7 @@ modId = "${mod_id}"
 version = "${version}"
 displayName = "${mod_name}"
 displayURL = "https://modrinth.com/mod/voxelparticles"
+iconFile = "assets/voxelparticles/icon.png"
 authors = "addavriance, chelovek_exe"
 description = "${mod_description}"
 
