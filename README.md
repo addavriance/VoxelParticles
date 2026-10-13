@@ -1,11 +1,16 @@
 <div align="center">
 
-<img width="1014" height="126" alt="minecraft_title (4)" src="https://github.com/user-attachments/assets/d686474c-bd38-47e6-8a1a-e74c85b05c7b" />
+<br>
+
+<img width="1014" height="126" alt="logo" src="https://github.com/user-attachments/assets/d686474c-bd38-47e6-8a1a-e74c85b05c7b" />
+
+<br>
+<br>
+<br>
 
 <a href="https://modrinth.com/mod/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/modrinth.svg" alt="Modrinth"></a>
 <a href="https://www.curseforge.com/minecraft/mc-mods/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/curseforge.svg" alt="CurseForge"></a>
 <a href="https://github.com/addavriance/VoxelParticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/github.svg" alt="GitHub"></a>
-<a href="https://fabricmc.net/"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/fabric.svg" alt="Fabric"></a>
 <a href="#supported-versions"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/minecraft.svg" alt="Minecraft 1.21.4 to 26.2"></a>
 
 </div>
@@ -49,8 +54,6 @@ Every sprite particle, vanilla or modded, is picked up automatically (even resou
 - **Any resource pack.** Custom textures turn 3D just like the vanilla ones.
 - **Knows when to back off.** Distant and tiny particles stay flat, meshes are cached, and a watchdog
   pauses the effect for a few seconds if it ever gets too expensive.
-- **Settings in game.** A screen made of vanilla widgets, opened from Mod Menu, plus an optional key to
-  toggle the effect (unbound by default).
 
 ## Compatibility
 
@@ -59,25 +62,10 @@ Every sprite particle, vanilla or modded, is picked up automatically (even resou
 | [Sodium](https://modrinth.com/mod/sodium) | Works |
 | [Iris](https://modrinth.com/mod/iris) and shader packs | Works |
 | Custom resource packs | Works |
-| Particles from other mods | Works, picked up automatically, nothing to register |
+| Particles from other mods | Works |
 
 > **One exception:** particles that draw their own geometry instead of a sprite stay as they are.
 > For example, the slash effects of [Better Combat](https://modrinth.com/mod/better-combat) remain flat.
-
-## Supported versions
-
-Fabric only for now. Client-side, servers don't need it. Requires [Fabric API](https://modrinth.com/mod/fabric-api);
-[Mod Menu](https://modrinth.com/mod/modmenu) is optional and adds the settings screen.
-
-| Minecraft | Status |
-|---|---|
-| 26.2 | Tested |
-| 26.1.2 | Tested |
-| 1.21.11 | Tested |
-| 1.21.8 | Tested |
-| 1.21.5 | Tested |
-| 1.21.4 | Tested |
-
 
 <details>
 <summary><b>Configuration</b></summary>
