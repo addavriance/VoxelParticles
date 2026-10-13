@@ -73,17 +73,30 @@ Change settings in game through Mod Menu, or edit `config/voxelparticles.json`.
 
 | Option | Default | What it does |
 |---|---|---|
-| `enabled` | `true` | Turns the effect on and off |
-| `motion` | `SWAY` | `BILLBOARD` (faces the camera like vanilla), `SWAY`, `SPIN` or `TUMBLE` |
-| `depth` | `1.0` | Thickness, `0.1` to `4`. At `1.0` every pixel is a cube |
-| `shading` | `1.0` | How much darker the sides are than the front, `0` to `1` |
-| `motionSpeed` | `1.0` | Speed of sway, spin and tumble, `0` to `5` |
+| `enabled` | `true` | Turns the whole effect on and off |
 | `maxResolution` | `16` | Detail: the largest model size per side, `4` to `64` |
 | `lodDistance` | `64` | Particles farther than this many blocks are drawn flat, `0` for no limit |
-| `tumbleDebris` | `true` | Crumbs tumble in the air and land flat |
-| `blockParticles` | `true` | Makes block particles 3D |
-| `itemParticles` | `true` | Makes item particles 3D |
 | `excludedSprites` | see below | Sprite ids that always stay flat, `*` works as a wildcard |
+
+Block, item and other particles each have their own section: `blocks`, `items` and `particles`. They take the same options:
+
+| Option | Default | What it does |
+|---|---|---|
+| `enabled` | `true` | Makes this kind of particle 3D |
+| `motion` | `SWAY` | `BILLBOARD` (faces the camera like vanilla), `SWAY`, `SPIN` or `TUMBLE` |
+| `depth` | `1.0` (`3.0` for blocks) | Thickness, `0.1` to `4`. At `1.0` every pixel is a cube |
+| `shading` | `1.0` | How much darker the sides are than the front, `0` to `1` |
+| `motionSpeed` | `1.0` | Speed of sway, spin and tumble, `0` to `5` |
+| `tumbleDebris` | `true` | Crumbs tumble in the air and land flat (`blocks` and `items` only) |
+
+```json
+{
+  "blocks": { "depth": 3.0, "motion": "TUMBLE" },
+  "items": { "depth": 1.0, "motion": "TUMBLE" },
+  "particles": { "depth": 0.3, "motion": "SWAY" }
+}
+```
+
 </details>
 <details>
 <summary><b>Keeping a particle flat</b></summary>
