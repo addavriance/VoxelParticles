@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/banner.svg" alt="Voxel Particles" width="100%">
+<img width="1014" height="126" alt="minecraft_title (4)" src="https://github.com/user-attachments/assets/d686474c-bd38-47e6-8a1a-e74c85b05c7b" />
 
 <a href="https://modrinth.com/mod/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/modrinth.svg" alt="Modrinth"></a>
 <a href="https://www.curseforge.com/minecraft/mc-mods/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/curseforge.svg" alt="CurseForge"></a>
@@ -18,22 +18,22 @@ Every sprite particle, vanilla or modded, is picked up automatically (even resou
 ## Showcase
 
 ### Break block particles
-![break_block](https://imgur.com/IniYDRO.gif)
+![break_block](https://i.imgur.com/Fh7o7cH.gif)
 
 ### Campfire smoke with real depth
-![campfire](https://imgur.com/rT4IiVZ.gif)
+![campfire](https://i.imgur.com/4eRhNME.gif)
 
 ### Crumbs of the food you eat
-![eating](https://imgur.com/Qfr1P4a.gif)
+![eating](https://i.imgur.com/vQya5t5.gif)
 
 ### Potions effects particles
-![potions](https://imgur.com/2H9THRY.gif)
+![potions](https://i.imgur.com/wBryMO1.gif)
 
 ### Modded particles (as example Fire Staff from [Wizards](https://modrinth.com/mod/wizards))
-![modded](https://imgur.com/9EFVCfB.gif)
+![modded](https://i.imgur.com/2684UwB.gif)
 
 ### On and off comparison
-![comparison](https://imgur.com/uCMRdMK.gif)
+![comparison](https://i.imgur.com/UYwNbWS.gif)
 
 ### In-game settings
 <img width="869" height="471" alt="image" src="https://github.com/user-attachments/assets/763a5506-508f-4fae-8eb9-16f289ce7a86" />
@@ -74,12 +74,13 @@ Fabric only for now. Client-side, servers don't need it. Requires [Fabric API](h
 | 26.2 | Tested |
 | 26.1.2 | Tested |
 | 1.21.11 | Tested |
-| 1.21.8 | Tested (the jar also declares 1.21.6 and 1.21.7, not tested there) |
+| 1.21.8 | Tested |
 | 1.21.5 | Tested |
 | 1.21.4 | Tested |
 
-## Configuration
 
+<details>
+<summary><b>Configuration</b></summary>
 Change settings in game through Mod Menu, or edit `config/voxelparticles.json`.
 
 | Option | Default | What it does |
@@ -95,7 +96,7 @@ Change settings in game through Mod Menu, or edit `config/voxelparticles.json`.
 | `blockParticles` | `true` | Makes block particles 3D |
 | `itemParticles` | `true` | Makes item particles 3D |
 | `excludedSprites` | see below | Sprite ids that always stay flat, `*` works as a wildcard |
-
+</details>
 <details>
 <summary><b>Keeping a particle flat</b></summary>
 
