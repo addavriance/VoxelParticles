@@ -56,11 +56,12 @@ processResources {
 		minecraft_version: props.minecraft_version,
 		fabric_mc_range  : props.getProperty('fabric_mc_range', ''),
 		loader_range     : props.getProperty("${loader}_loader_range", ''),
+		mc_range         : props.getProperty("${loader}_mc_range", ''),
 		java_version     : javaVersion,
 		mixin_compat     : "JAVA_${Math.min(javaVersion, 21)}",
 	]
 	inputs.properties expandProps
-	filesMatching(['fabric.mod.json', '*.mixins.json']) {
+	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {
 		expand expandProps
 	}
 }

@@ -1,0 +1,27 @@
+// NeoForge target. Uses ModDevGradle, which sets up the unobfuscated (Mojang-mapped) Minecraft itself.
+// Layers and the shared config come from gradle/common.gradle; this file only adds the NeoForge toolchain.
+
+apply from: rootProject.file('gradle/common.gradle')
+
+repositories {
+	maven {
+		name = 'NeoForged'
+		url = 'https://maven.neoforged.net/releases'
+	}
+}
+
+neoForge {
+	version = vp.neoforge_version
+
+	runs {
+		client {
+			client()
+		}
+	}
+
+	mods {
+		"${mod_id}" {
+			sourceSet sourceSets.main
+		}
+	}
+}
