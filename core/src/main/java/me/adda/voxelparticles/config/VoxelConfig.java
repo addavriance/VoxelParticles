@@ -36,13 +36,21 @@ public final class VoxelConfig {
 		public boolean enabled = true;
 		public Motion motion = Motion.SWAY;
 
-		public float depth = 1.0F;
+		public float depth;
 
 		public float shading = 1.0F;
 
 		public float motionSpeed = 1.0F;
 
 		public boolean tumbleDebris = true;
+
+		public Settings() {
+			this(1F);
+		}
+
+		public Settings(float depth) {
+			this.depth = depth;
+		}
 
 		void sanitize() {
 			if (motion == null) motion = Motion.SWAY;
@@ -59,7 +67,7 @@ public final class VoxelConfig {
 
 	public float lodDistance = 64.0F;
 
-	public Settings blocks = new Settings();
+	public Settings blocks = new Settings(3F);
 	public Settings items = new Settings();
 	public Settings particles = new Settings();
 
@@ -111,7 +119,7 @@ public final class VoxelConfig {
 	}
 
 	public void sanitize() {
-		if (blocks == null) blocks = new Settings();
+		if (blocks == null) blocks = new Settings(3F);
 		if (items == null) items = new Settings();
 		if (particles == null) particles = new Settings();
 
