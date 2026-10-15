@@ -57,12 +57,17 @@ processResources {
 		fabric_mc_range  : props.getProperty('fabric_mc_range', ''),
 		loader_range     : props.getProperty("${loader}_loader_range", ''),
 		mc_range         : props.getProperty("${loader}_mc_range", ''),
+		javafml_range    : props.getProperty("${loader}_javafml_range", '[4,)'),
 		java_version     : javaVersion,
 		mixin_compat     : "JAVA_${Math.min(javaVersion, 21)}",
 	]
-	inputs.properties expandProps
-	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml', '*.mixins.json']) {
-		expand expandProps
+	def modsFile = props.getProperty("${loader}_mods_file", 'neoforge.mods.toml')
+	inputs.properties expandProps + [mods_file: modsFile]
+	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml', '*.mixins.json']) { details ->
+		details.expand(expandProps)
+		if (details.path == 'META-INF/neoforge.mods.toml') {
+			details.relativePath = details.relativePath.replaceLastName(modsFile)
+		}
 	}
 }
 
