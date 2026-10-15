@@ -1,0 +1,18 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.adda.voxelparticles.mixin",
+  "compatibilityLevel": "${mixin_compat}",
+  "mixins": [],
+  "client": [
+    "SingleQuadParticleMixin",
+    "BufferBuilderAccessor",
+    "SpriteContentsAccessor",
+    "TextureAtlasAccessor",
+    "TextureAtlasMixin",
+    "TextureSheetParticleAccessor"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
