@@ -8,7 +8,6 @@ import net.minecraft.client.OptionInstance;
 import net.minecraft.client.Options;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
-import net.minecraft.client.gui.components.OptionsList;
 import net.minecraft.client.gui.components.Tooltip;
 import net.minecraft.client.gui.screens.OptionsSubScreen;
 import net.minecraft.client.gui.screens.Screen;
@@ -24,10 +23,14 @@ import java.util.function.IntFunction;
 public final class VoxelConfigScreen extends OptionsSubScreen {
 	private static final String KEY = "voxelparticles.config.";
 	private static final int DISTANCE_STEP = 8;
-	private static final int BUTTON_WIDTH = 100;
+	private static final int TAB_MAX_WIDTH = 100;
+	private static final int TAB_GAP = 4;
+	private static final int TAB_Y = 26;
+	private static final int ROW_HEIGHT = 24;
+	private static final int ROW_TOP = 56;
 
 	private @Nullable VoxelConfig.Category selected;
-	private OptionsList list;
+	private int rowY;
 
 	public VoxelConfigScreen(Screen parent) {
 		this(parent, null);
@@ -46,9 +49,7 @@ public final class VoxelConfigScreen extends OptionsSubScreen {
 
 	@Override
 	protected void init() {
-		list = new OptionsList(minecraft, width, height, 32, height - 32);
-		addWidget(list);
-
+		rowY = ROW_TOP;
 		VoxelConfig cfg = VoxelParticles.config();
 		if (selected == null) {
 			addGeneral(cfg);
@@ -56,38 +57,49 @@ public final class VoxelConfigScreen extends OptionsSubScreen {
 			addCategory(cfg.settings(selected));
 		}
 
-		int row = height - 27;
-		int gap = 4;
-		int x = width / 2 - (BUTTON_WIDTH * 4 + gap * 3) / 2;
-		addRenderableWidget(categoryButton(null, x, row));
+		int tabWidth = Math.min(TAB_MAX_WIDTH, (width - 32 - TAB_GAP * 3) / 4);
+		int x = width / 2 - (tabWidth * 4 + TAB_GAP * 3) / 2;
+		addRenderableWidget(categoryButton(null, x, TAB_Y, tabWidth));
 		for (VoxelConfig.Category category : VoxelConfig.Category.values()) {
-			x += BUTTON_WIDTH + gap;
-			addRenderableWidget(categoryButton(category, x, row));
+			x += tabWidth + TAB_GAP;
+			addRenderableWidget(categoryButton(category, x, TAB_Y, tabWidth));
 		}
 
 		addRenderableWidget(Button.builder(CommonComponents.GUI_DONE, b -> onClose())
-			.bounds(width / 2 - 100, height - 52, 200, 20).build());
+			.bounds(width / 2 - 100, height - 27, 200, 20).build());
 	}
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
 		super.render(graphics, mouseX, mouseY, partialTick);
 		graphics.drawCenteredString(font, title, width / 2, 12, 0xFFFFFF);
-		list.render(graphics, mouseX, mouseY, partialTick);
 	}
 
-	private void addSmall(OptionInstance<?>... options) {
-		list.addSmall(options);
+	private void addBig(OptionInstance<?> option) {
+		addRenderableWidget(option.createButton(this.options, width / 2 - 155, rowY, 310));
+		rowY += ROW_HEIGHT;
 	}
 
-	private Button categoryButton(@Nullable VoxelConfig.Category category, int x, int y) {
+	private void addSmall(OptionInstance<?>... row) {
+		for (int i = 0; i < row.length; i += 2) {
+			addRenderableWidget(row[i].createButton(this.options, width / 2 - 155, rowY, 150));
+			if (i + 1 < row.length) {
+				addRenderableWidget(row[i + 1].createButton(this.options, width / 2 + 5, rowY, 150));
+			}
+			rowY += ROW_HEIGHT;
+		}
+	}
+
+	private Button categoryButton(@Nullable VoxelConfig.Category category, int x, int y, int tabWidth) {
 		Component label = Component.translatable(KEY + "tab." + (category == null ? "general" : id(category)));
-		return Button.builder(label, b -> ScreenNav.open(new VoxelConfigScreen(lastScreen, category)))
-			.bounds(x, y, BUTTON_WIDTH, 20).build();
+		Button button = Button.builder(label, b -> ScreenNav.open(new VoxelConfigScreen(lastScreen, category)))
+			.bounds(x, y, tabWidth, 20).build();
+		button.active = selected != category;
+		return button;
 	}
 
 	private void addGeneral(VoxelConfig cfg) {
-		list.addBig(toggle("enabled", cfg.enabled, v -> cfg.enabled = v));
+		addBig(toggle("enabled", cfg.enabled, v -> cfg.enabled = v));
 		addSmall(
 			slider("lod_distance", 0, 32, Math.round(cfg.lodDistance / DISTANCE_STEP),
 				v -> v == 0 ? Component.translatable(KEY + "unlimited") : Component.translatable(KEY + "blocks", v * DISTANCE_STEP),
@@ -98,8 +110,8 @@ public final class VoxelConfigScreen extends OptionsSubScreen {
 	}
 
 	private void addCategory(VoxelConfig.Settings settings) {
-		list.addBig(toggle("category_enabled", settings.enabled, v -> settings.enabled = v));
-		list.addBig(motion(settings));
+		addBig(toggle("category_enabled", settings.enabled, v -> settings.enabled = v));
+		addBig(motion(settings));
 		addSmall(
 			slider("motion_speed", 0, 30, Math.round(settings.motionSpeed * 10), v -> times(v / 10F), v -> settings.motionSpeed = v / 10F),
 			slider("depth", 1, 30, Math.round(settings.depth * 10), v -> times(v / 10F), v -> settings.depth = v / 10F),
