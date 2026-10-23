@@ -10,6 +10,7 @@ import me.adda.voxelparticles.mesh.AtlasMeshCache;
 import me.adda.voxelparticles.mesh.VoxelMesh;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.texture.AbstractTexture;
+import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlas;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.resources.ResourceLocation;
@@ -132,7 +133,8 @@ public final class ParticleVoxelizer {
 
 		@Override
 		public void vertex(float x, float y, float z, float u, float v, int argb, int light) {
-			target.addVertex(x, y, z).setUv(u, v).setColor(argb).setLight(light);
+			// Buffers with a richer format (overlay, normal) than PARTICLE throw on missing elements; unused setters are no-ops
+			target.addVertex(x, y, z).setUv(u, v).setColor(argb).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0F, 1F, 0F);
 		}
 	}
 }
