@@ -63,9 +63,9 @@ processResources {
 	]
 	def modsFile = props.getProperty("${loader}_mods_file", 'neoforge.mods.toml')
 	inputs.properties expandProps + [mods_file: modsFile]
-	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml', '*.mixins.json']) { details ->
+	filesMatching(['fabric.mod.json', 'META-INF/neoforge.mods.toml', 'META-INF/forge.mods.toml', '*.mixins.json']) { details ->
 		details.expand(expandProps)
-		if (details.path == 'META-INF/neoforge.mods.toml') {
+		if (details.path.endsWith('.mods.toml')) {
 			details.relativePath = details.relativePath.replaceLastName(modsFile)
 		}
 	}

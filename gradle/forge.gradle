@@ -1,0 +1,43 @@
+// Forge target for the SRG-at-runtime versions (up to 1.20.1). Uses the legacy flavour of ModDevGradle, which sets up
+// Forge against official mappings and reobfuscates the jar to SRG itself.
+// Layers and the shared config come from gradle/common.gradle; this file only adds the Forge toolchain.
+
+apply from: rootProject.file('gradle/common.gradle')
+
+legacyForge {
+	version = vp.forge_version
+
+	runs {
+		client {
+			client()
+		}
+	}
+
+	mods {
+		"${mod_id}" {
+			sourceSet sourceSets.main
+		}
+	}
+}
+
+dependencies {
+	annotationProcessor 'org.spongepowered:mixin:0.8.5:processor'
+}
+
+mixin {
+	add sourceSets.main, "${mod_id}.refmap.json"
+	config "${mod_id}.mixins.json"
+}
+
+// The shared mixin config has no refmap entry (Fabric's Loom injects its own); Forge needs it to translate names to SRG
+processResources {
+	filesMatching('*.mixins.json') {
+		filter { String line -> line.replace('"required": true,', "\"required\": true,\n  \"refmap\": \"${mod_id}.refmap.json\",") }
+	}
+}
+
+jar {
+	manifest {
+		attributes('MixinConfigs': "${mod_id}.mixins.json")
+	}
+}

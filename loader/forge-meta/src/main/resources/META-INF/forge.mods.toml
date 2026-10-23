@@ -1,0 +1,27 @@
+modLoader = "javafml"
+loaderVersion = "${javafml_range}"
+license = "${mod_license}"
+issueTrackerURL = "https://github.com/addavriance/VoxelParticles/issues"
+logoFile = "assets/voxelparticles/icon.png"
+
+[[mods]]
+modId = "${mod_id}"
+version = "${version}"
+displayName = "${mod_name}"
+displayURL = "https://modrinth.com/mod/voxelparticles"
+authors = "addavriance, chelovek_exe"
+description = "${mod_description}"
+
+[[dependencies.${mod_id}]]
+modId = "forge"
+mandatory = true
+versionRange = "${loader_range}"
+ordering = "NONE"
+side = "CLIENT"
+
+[[dependencies.${mod_id}]]
+modId = "minecraft"
+mandatory = true
+versionRange = "${mc_range}"
+ordering = "NONE"
+side = "CLIENT"
