@@ -5,6 +5,8 @@ plugins {
 	id 'net.neoforged.moddev.legacyforge' version '2.0.148' apply false
 }
 
+apply from: 'gradle/publish.gradle'
+
 // Collects every target's release jar into dist/.
 tasks.register('dist') {
 	group = 'build'
