@@ -11,7 +11,7 @@
 <a href="https://modrinth.com/mod/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/modrinth.svg" alt="Modrinth"></a>
 <a href="https://www.curseforge.com/minecraft/mc-mods/voxelparticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/curseforge.svg" alt="CurseForge"></a>
 <a href="https://github.com/addavriance/VoxelParticles"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/github.svg" alt="GitHub"></a>
-<a href="#supported-versions"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/minecraft.svg" alt="Minecraft 1.20.4 to 26.2"></a>
+<a href="#supported-versions"><img src="https://raw.githubusercontent.com/addavriance/VoxelParticles/master/docs/media/badges/minecraft.svg" alt="Minecraft 1.20.1 to 26.2"></a>
 
 </div>
 
