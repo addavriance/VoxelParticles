@@ -10,4 +10,5 @@ tasks.register('dist') {
 	group = 'build'
 	description = 'Builds all targets and copies the release jars into dist/'
 	dependsOn subprojects.collect { "${it.path}:collectJar" }
+	dependsOn gradle.includedBuild('forge-loom').task(':dist')
 }

@@ -1,6 +1,8 @@
 // Shared setup for every target project (versions/<minecraft>/<loader>).
 // Reads versions/<minecraft>/version.properties into `vp` and wires the shared source folders.
 
+// The isolated builds (forge-loom) live in their own root, so they say where the repository root is
+def repoRoot = rootProject.ext.has('repoRoot') ? rootProject.ext.repoRoot : rootProject.projectDir
 def mcDir = projectDir.parentFile
 def loader = projectDir.name
 def props = new Properties()
@@ -23,12 +25,12 @@ roots = roots.collect { it.trim() }.findAll { it }
 sourceSets {
 	main {
 		java {
-			roots.each { srcDir rootProject.file("${it}/src/main/java") }
+			roots.each { srcDir new File(repoRoot, "${it}/src/main/java") }
 			srcDir new File(mcDir, 'common/src/main/java')
 		}
 		resources {
-			srcDir rootProject.file('shared/src/main/resources')
-			roots.each { srcDir rootProject.file("${it}/src/main/resources") }
+			srcDir new File(repoRoot, 'shared/src/main/resources')
+			roots.each { srcDir new File(repoRoot, "${it}/src/main/resources") }
 			srcDir new File(mcDir, 'common/src/main/resources')
 		}
 	}
@@ -72,7 +74,7 @@ processResources {
 }
 
 jar {
-	from(rootProject.file('LICENSE')) {
+	from(new File(repoRoot, 'LICENSE')) {
 		rename { "${it}_${mod_id}" }
 	}
 	manifest {
@@ -91,5 +93,5 @@ tasks.register('collectJar', Copy) {
 	def releaseTask = tasks.named(releaseJarName)
 	dependsOn releaseTask
 	from releaseTask
-	into rootProject.file('dist')
+	into new File(repoRoot, 'dist')
 }

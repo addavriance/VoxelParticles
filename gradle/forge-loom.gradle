@@ -1,0 +1,31 @@
+// Forge target for the SRG-at-runtime versions after 1.20.1, built with Architectury Loom (see forge-loom/).
+// The project applies 'dev.architectury.loom' (and has loom.platform=forge in its gradle.properties), then this script.
+// Layers and the shared config come from gradle/common.gradle; this file only adds the Forge toolchain.
+
+ext.releaseJarTask = 'remapJar'
+apply from: new File(rootProject.ext.repoRoot, 'gradle/common.gradle')
+
+loom {
+	silentMojangMappingsLicense()
+
+	forge {
+		mixinConfig "${mod_id}.mixins.json"
+	}
+
+	// Generates the refmap that translates the mixins' names to SRG, which Forge uses at runtime up to 1.20.4
+	mixin {
+		useLegacyMixinAp = true
+	}
+
+	runs {
+		configureEach {
+			runDir = 'run'
+		}
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${vp.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	forge "net.minecraftforge:forge:${vp.forge_version}"
+}

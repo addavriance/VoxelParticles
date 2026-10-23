@@ -1,0 +1,43 @@
+// Forge targets built with Architectury Loom. Its classes clash with Fabric Loom's, so these targets can't live in the
+// main build; this one is pulled in by it (see includeBuild in ../settings.gradle) and also works on its own:
+//   gradlew -p forge-loom build
+pluginManagement {
+	repositories {
+		maven {
+			name = 'Architectury'
+			url = 'https://maven.architectury.dev/'
+		}
+		maven {
+			name = 'Fabric'
+			url = 'https://maven.fabricmc.net/'
+		}
+		maven {
+			name = 'MinecraftForge'
+			url = 'https://maven.minecraftforge.net/'
+		}
+		mavenCentral()
+		gradlePluginPortal()
+	}
+}
+
+rootProject.name = 'voxelparticles-forge'
+
+// Same layout as the main build: versions/<minecraft>/<loader>, picked by "<loader>_build=isolated" in version.properties
+def requested = (settings.providers.gradleProperty('targets').getOrElse('') ?: '')
+	.split(',').collect { it.trim() }.findAll { it }
+
+file('../versions').eachDir { mcDir ->
+	def versionProps = new Properties()
+	new File(mcDir, 'version.properties').withInputStream { versionProps.load(it) }
+
+	mcDir.eachDir { loaderDir ->
+		if (!new File(loaderDir, 'build.gradle').exists() || versionProps.getProperty("${loaderDir.name}_build") != 'isolated') {
+			return
+		}
+		String name = "${mcDir.name}-${loaderDir.name}"
+		if (requested.isEmpty() || requested.contains(name)) {
+			include(name)
+			project(":${name}").projectDir = loaderDir
+		}
+	}
+}

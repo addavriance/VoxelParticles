@@ -1,0 +1,19 @@
+plugins {
+	id 'dev.architectury.loom' version '1.17-SNAPSHOT' apply false
+}
+
+ext.repoRoot = file('..')
+
+// The shared properties (mod id, version, ...) live in the main build's gradle.properties
+def shared = new Properties()
+new File(repoRoot, 'gradle.properties').withInputStream { shared.load(it) }
+allprojects {
+	shared.each { key, value -> ext.set(key as String, value) }
+}
+
+// Collects every target's release jar into dist/.
+tasks.register('dist') {
+	group = 'build'
+	description = 'Builds all targets and copies the release jars into dist/'
+	dependsOn subprojects.collect { "${it.path}:collectJar" }
+}

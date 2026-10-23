@@ -20,8 +20,15 @@ def requested = (settings.providers.gradleProperty('targets').getOrElse('') ?: '
 	.split(',').collect { it.trim() }.findAll { it }
 
 file('versions').eachDir { mcDir ->
+	def versionProps = new Properties()
+	new File(mcDir, 'version.properties').withInputStream { versionProps.load(it) }
+
 	mcDir.eachDir { loaderDir ->
 		if (loaderDir.name == 'common' || !new File(loaderDir, 'build.gradle').exists()) {
+			return
+		}
+		// "<loader>_build=isolated" targets need a Gradle plugin that cannot share a classpath with this build's; see forge-loom
+		if (versionProps.getProperty("${loaderDir.name}_build") == 'isolated') {
 			return
 		}
 		String name = "${mcDir.name}-${loaderDir.name}"
@@ -31,3 +38,5 @@ file('versions').eachDir { mcDir ->
 		}
 	}
 }
+
+includeBuild('forge-loom')
