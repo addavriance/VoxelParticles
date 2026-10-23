@@ -1,0 +1,5 @@
+plugins {
+	id 'dev.architectury.loom'
+}
+
+apply from: new File(rootProject.ext.repoRoot, 'gradle/forge-loom.gradle')
