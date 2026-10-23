@@ -1,6 +1,5 @@
 package me.adda.voxelparticles.forge;
 
-import com.mojang.blaze3d.platform.InputConstants;
 import me.adda.voxelparticles.VoxelParticles;
 import me.adda.voxelparticles.gui.VoxelConfigScreen;
 import net.minecraft.client.KeyMapping;
@@ -16,8 +15,10 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 
 // Kept apart from the @Mod class so a dedicated server never loads the client classes referenced here
 final class VoxelParticlesClient {
+	// InputConstants.UNKNOWN.getValue(); the field itself is not found at runtime on NeoForge 1.20.1
+	private static final int UNBOUND = -1;
 	private static final KeyMapping TOGGLE = new KeyMapping(
-		"key.voxelparticles.toggle", InputConstants.UNKNOWN.getValue(), KeyMapping.CATEGORY_MISC);
+		"key.voxelparticles.toggle", UNBOUND, KeyMapping.CATEGORY_MISC);
 
 	private VoxelParticlesClient() {
 	}
