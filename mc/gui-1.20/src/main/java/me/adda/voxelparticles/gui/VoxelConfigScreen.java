@@ -71,6 +71,7 @@ public final class VoxelConfigScreen extends OptionsSubScreen {
 
 	@Override
 	public void render(GuiGraphics graphics, int mouseX, int mouseY, float partialTick) {
+		ScreenBackground.draw(this, graphics);
 		super.render(graphics, mouseX, mouseY, partialTick);
 		graphics.drawCenteredString(font, title, width / 2, 12, 0xFFFFFF);
 	}
